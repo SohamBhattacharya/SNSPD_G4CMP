@@ -15,10 +15,14 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "globals.hh"
 
+#include "G4ParticleGun.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4ParticleTable.hh"
 
-class G4ParticleGun;
-class G4GeneralParticleSource;
-class G4Event;
+
+//class G4ParticleGun;
+//class G4GeneralParticleSource;
+//class G4Event;
 
 class RISQTutorialPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
@@ -30,7 +34,8 @@ public:
     virtual void GeneratePrimaries(G4Event*);
 
   private:
-    G4GeneralParticleSource*                fParticleGun;
+   // G4GeneralParticleSource*                fParticleGun;
+    G4ParticleGun *fParticleGun;
 
 };
 

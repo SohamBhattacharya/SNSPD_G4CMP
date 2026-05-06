@@ -2,6 +2,7 @@
  * This software is licensed under the terms of the GNU General Public *
  * License version 3 or later. See G4CMP/LICENSE for the full license. *
 \***********************************************************************/
+#include "RISQTutorialDetectorConstruction.hh"
 
 /// \file exoticphysics/phonon/src/PhononDetectorConstruction.cc \brief
 /// Implementation of the PhononDetectorConstruction class
@@ -11,43 +12,6 @@
 // 20140321  Drop passing placement transform to G4LatticePhysical
 // 20211207  Replace G4Logical*Surface with G4CMP-specific versions.
 // 20220809  [ For M. Hui ] -- Add frequency dependent surface properties.
-
-#include "RISQTutorialDetectorConstruction.hh"
-#include "RISQTutorialSensitivity.hh"
-#include "RISQTutorialQubitHousing.hh"
-#include "RISQTutorialPad.hh"
-#include "RISQTutorialTransmissionLine.hh"
-#include "RISQTutorialStraightFluxLine.hh"
-#include "RISQTutorialCornerFluxLine.hh"
-#include "RISQTutorialResonatorAssembly.hh"
-#include "G4CMPPhononElectrode.hh"
-#include "G4CMPElectrodeSensitivity.hh"
-#include "G4CMPLogicalBorderSurface.hh"
-#include "G4CMPSurfaceProperty.hh"
-#include "G4Box.hh"
-#include "G4Colour.hh"
-#include "G4FieldManager.hh"
-#include "G4GeometryManager.hh"
-#include "G4LatticeLogical.hh"
-#include "G4LatticeManager.hh"
-#include "G4LatticePhysical.hh"
-#include "G4CMPLogicalBorderSurface.hh"
-#include "G4LogicalVolume.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4Material.hh"
-#include "G4NistManager.hh"
-#include "G4PVPlacement.hh"
-#include "G4PhysicalVolumeStore.hh"
-#include "G4RunManager.hh"
-#include "G4SDManager.hh"
-#include "G4SolidStore.hh"
-#include "G4Sphere.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4TransportationManager.hh"
-#include "G4Tubs.hh"
-#include "G4UniformMagField.hh"
-#include "G4UserLimits.hh"
-#include "G4VisAttributes.hh"
 
 using namespace RISQTutorialDetectorParameters;
 
@@ -267,22 +231,8 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
 						diffCoeffs, specCoeffs, GHz, GHz, GHz);
 
     //Add a phonon sensor to the interface properties here.
-    AttachPhononSensor(fSiNbInterface);
+    //AttachPhononSensor(fSiNbInterface);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   //---------------------------------------------------------------------------------------------------------------------
@@ -291,10 +241,14 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
   //     
   // World
   //
-  G4VSolid* solid_world = new G4Box("World",55.*cm,55.*cm,55.*cm);
+	G4double WorldL = 0.127*2.2; //((0.02+0.01+0.02)*2+0.006);
+    //G4Box *solidWorld = new G4Box("solidWorld", WorldL/2*m, WorldL/2*m, WorldL/2*m);
+    //G4LogicalVolume *logicWorld = new G4LogicalVolume(solidWorld, VacuumMat, "logicWorld");  
+  
+  G4VSolid* solid_world = new G4Box("World",WorldL/2*m,WorldL/2*m,WorldL/2*m);
   G4LogicalVolume* log_world = new G4LogicalVolume(solid_world,fLiquidHelium,"World");
   //  worldLogical->SetUserLimits(new G4UserLimits(10*mm, DBL_MAX, DBL_MAX, 0, 0));
-  log_world->SetVisAttributes(G4VisAttributes::Invisible);
+  //log_world->SetVisAttributes(G4VisAttributes::Invisible);
   fWorldPhys = new G4PVPlacement(0,
 				 G4ThreeVector(),
 				 log_world,
@@ -306,8 +260,71 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
   
   bool checkOverlaps = true;
 
-  
+  /*
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Lets make the cryostat model:
+    G4double innerRadius = 0.114338 * m;  // Cylinder with no inner radius (solid cylinder)
+    G4double outerRadius = 0.114846* m; // Radius of the cylinder
+    
+    G4double innerRadiusShield2 = 0.124155 * m;  // Cylinder with no inner radius (solid cylinder)
+    G4double outerRadiusShield2 = 0.127* m; // Radius of the cylinder
+    
+    G4double height = WorldL*m;    // Height of the cylinder
+    G4double startAngle = 0.0 * deg; // Starting angle
+    G4double spanningAngle = 360.0 * deg; // Full circle
+    G4Tubs *solidRadiator = new G4Tubs("solidRadiator", innerRadius, outerRadius, height / 2, startAngle, spanningAngle);
+    G4Tubs *solidRadiatorShield2 = new G4Tubs("solidRadiator2", innerRadiusShield2, outerRadiusShield2, height / 2, startAngle, spanningAngle);
 
+    G4LogicalVolume *logicRadiator = new G4LogicalVolume(solidRadiator, AlMat, "logicalRadiator");
+    G4LogicalVolume *logicRadiatorShield2 = new G4LogicalVolume(solidRadiatorShield2, AlMat, "logicalRadiator2");
+
+    // Create a rotation matrix to rotate 90 degrees around the Z-axis
+    G4RotationMatrix *rotation = new G4RotationMatrix();
+    rotation->rotateX(90 * deg); // Rotate 90 degrees around the Y-axis
+    // Place the cylinder with the rotation
+    G4VPhysicalVolume *physRadiator = new G4PVPlacement(rotation, G4ThreeVector(0., 0., 0. * m), logicRadiator, "physRadiator", log_world, false, 0, true);
+    G4VPhysicalVolume *physRadiator2 = new G4PVPlacement(rotation, G4ThreeVector(0., 0., 0. * m), logicRadiatorShield2, "physRadiator2", log_world, false, 0, true);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Copper holder
+	// Holder of the sensing device in L shaped copper. It is still unknown how exactly this is attached!!!
+	  G4VisAttributes* siliconChipVisAtt= new G4VisAttributes(G4Colour(1.0, 0.5, 0.0));
+	  siliconChipVisAtt->SetVisibility(true);
+
+	solidCu1 = new G4Box("solidCu1", 6*mm/2, 6*mm/2-1*mm, 2*mm/2);
+	logicCu1 = new G4LogicalVolume(solidCu1, CuMat, "logicCu1");
+		logicCu1->SetVisAttributes(siliconChipVisAtt);
+	physCu1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),logicCu1,"physCu1",log_world,false,0,true);
+	solidCu2 = new G4Box("solidCu2", 6*mm/2, 2*mm/2, 6*mm/2);
+	logicCu2 = new G4LogicalVolume(solidCu2, CuMat, "logicCu2");
+		logicCu2->SetVisAttributes(siliconChipVisAtt);
+	physCu2 = new G4PVPlacement(0,G4ThreeVector(0,3.,2),logicCu2,"physCu2",log_world,false,0,true);
+
+	  
+	//////////////////
+	// Contact material btw the copper holder and the sensor (UNKNOWN!!!)
+	G4double Sensor_z = -1 *mm;
+	G4double Substrate_z = 0.5 * mm;
+	G4double Sensor_x = 1 * mm;
+	G4double Sensor_y = 1 * mm;
+	G4Box *solidsubstrate = new G4Box("solidsubstrate", Sensor_x/2, Sensor_y/2, Substrate_z/2);
+	logicsubstrate = new G4LogicalVolume(solidsubstrate, Si3N4Mat, "logicsubstrate");
+	
+	G4UserLimits* userLimits = new G4UserLimits();
+	userLimits->SetMaxAllowedStep(0.1 * mm);
+	logicsubstrate->SetUserLimits(userLimits);
+	
+	G4VPhysicalVolume *physsubstrate = new G4PVPlacement(
+		0,
+		G4ThreeVector(0., 0., Sensor_z-Substrate_z/2),
+		logicsubstrate,
+		"physsubstrate",
+		log_world,
+		false,
+		0,
+		true
+	);
+*/
 
 
   //-------------------------------------------------------------------------------------------------------------------
@@ -340,6 +357,28 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
 
 
 
+/*
+	//////////////////
+	// SiO2 top layer
+	// Protective layer over the sensor
+	G4double SiO2_z = 40 * nm;
+	G4Box *solid_SiO2toplayer = new G4Box("solid_SiO2toplayer", Sensor_x*mm/2, Sensor_y*mm/2, SiO2_z*mm/2);
+	G4LogicalVolume *logic_SiO2toplayer = new G4LogicalVolume(solid_SiO2toplayer, fSilicon, "logic_SiO2toplayer");
+	logic_SiO2toplayer->SetUserLimits(userLimits);
+	G4VPhysicalVolume *phys_SiO2toplayer = new G4PVPlacement(
+		0,
+		G4ThreeVector(0., 0., Sensor_z-Substrate_z-SiO2_z/2),
+		logic_SiO2toplayer,
+		"phys_SiO2toplayer",
+		log_world,
+		false,
+		0,
+		true
+	);
+		G4UserLimits* userLimits1 = new G4UserLimits();
+		userLimits1->SetMaxAllowedStep(0.05 * nm);
+		logic_SiO2toplayer->SetUserLimits(userLimits1);
+
   //Set up the G4CMP silicon lattice information using the G4LatticeManager
   // G4LatticeManager gives physics processes access to lattices by volume
   G4LatticeManager* LM = G4LatticeManager::GetLatticeManager();
@@ -349,13 +388,16 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
   // G4LatticePhysical assigns G4LatticeLogical a physical orientation
   G4LatticePhysical* phys_siliconLattice = new G4LatticePhysical(log_siliconLattice);
   phys_siliconLattice->SetMillerOrientation(1,0,0); 
-  LM->RegisterLattice(phys_siliconChip,phys_siliconLattice);
+  
+  
+  
+  LM->RegisterLattice(phys_SiO2toplayer,phys_siliconLattice);
 
   //Set up border surfaces
-  G4CMPLogicalBorderSurface * border_siliconChip_world = new G4CMPLogicalBorderSurface("border_siliconChip_world", phys_siliconChip, fWorldPhys, fSiVacuumInterface);
+  //G4CMPLogicalBorderSurface * border_siliconChip_world = new G4CMPLogicalBorderSurface("border_siliconChip_world", phys_siliconChip, fWorldPhys, fSiVacuumInterface);
 
     
-
+*/
 
 
   //-------------------------------------------------------------------------------------------------------------------
@@ -507,7 +549,7 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
 	}
       }
     }
-    
+   
     
     
     //-------------------------------------------------------------------------------------------------------------------

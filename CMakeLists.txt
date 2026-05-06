@@ -54,6 +54,7 @@ set(RISQTutorial_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialResonatorAssembly.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialStraightFluxLine.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialCornerFluxLine.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Physics.cc
     )
     
 if(USE_GEANT4_STATIC_LIBS)

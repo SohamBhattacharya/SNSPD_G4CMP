@@ -209,6 +209,33 @@ RISQTutorial.cc.s:
 	$(MAKE) -f CMakeFiles/RISQTutorial.dir/build.make CMakeFiles/RISQTutorial.dir/RISQTutorial.cc.s
 .PHONY : RISQTutorial.cc.s
 
+src/Physics.o: src/Physics.cc.o
+
+.PHONY : src/Physics.o
+
+# target to build an object file
+src/Physics.cc.o:
+	$(MAKE) -f CMakeFiles/RISQTutorialLib.dir/build.make CMakeFiles/RISQTutorialLib.dir/src/Physics.cc.o
+.PHONY : src/Physics.cc.o
+
+src/Physics.i: src/Physics.cc.i
+
+.PHONY : src/Physics.i
+
+# target to preprocess a source file
+src/Physics.cc.i:
+	$(MAKE) -f CMakeFiles/RISQTutorialLib.dir/build.make CMakeFiles/RISQTutorialLib.dir/src/Physics.cc.i
+.PHONY : src/Physics.cc.i
+
+src/Physics.s: src/Physics.cc.s
+
+.PHONY : src/Physics.s
+
+# target to generate assembly for a file
+src/Physics.cc.s:
+	$(MAKE) -f CMakeFiles/RISQTutorialLib.dir/build.make CMakeFiles/RISQTutorialLib.dir/src/Physics.cc.s
+.PHONY : src/Physics.cc.s
+
 src/RISQTutorialActionInitialization.o: src/RISQTutorialActionInitialization.cc.o
 
 .PHONY : src/RISQTutorialActionInitialization.o
@@ -577,6 +604,9 @@ help:
 	@echo "... RISQTutorial.o"
 	@echo "... RISQTutorial.i"
 	@echo "... RISQTutorial.s"
+	@echo "... src/Physics.o"
+	@echo "... src/Physics.i"
+	@echo "... src/Physics.s"
 	@echo "... src/RISQTutorialActionInitialization.o"
 	@echo "... src/RISQTutorialActionInitialization.i"
 	@echo "... src/RISQTutorialActionInitialization.s"
