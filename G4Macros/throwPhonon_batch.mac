@@ -1,0 +1,22 @@
+/run/initialize
+
+# No visualization — batch mode only
+# tracking verbose 2 prints full step tables to terminal
+
+/tracking/verbose 2
+/tracking/storeTrajectory 0
+
+# G4CMP flags
+/g4cmp/producePhonons 1.0
+/g4cmp/produceCharges 0.0
+/g4cmp/sampleLuke    0.0
+
+# Particle gun
+/gps/number 1
+/gps/particle phononL
+/gps/pos/type Point
+/gps/ang/type iso
+/gps/pos/centre 0.0 0.0 0.0 mm
+/gps/ene/type Mono
+/gps/energy 0.03 eV
+/run/beamOn 1

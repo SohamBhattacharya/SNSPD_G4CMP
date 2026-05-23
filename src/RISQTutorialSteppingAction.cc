@@ -3,8 +3,7 @@
  * License version 3 or later. See G4CMP/LICENSE for the full license. *
 \***********************************************************************/
 
-
-// Basic User Stepping action for the silicon six qubit array (mostly for debugging)
+// Stepping action — exports full per-step information for all phonon tracks.
 
 #include "RISQTutorialSteppingAction.hh"
 #include <iostream>
@@ -13,77 +12,84 @@
 #include "G4Track.hh"
 #include "G4Step.hh"
 #include "G4Threading.hh"
-
 #include "G4RunManager.hh"
 #include "G4StepPoint.hh"
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//Default constructor
+
 RISQTutorialSteppingAction::RISQTutorialSteppingAction()
 {
-  //Upon construction of this class, create a ROOT file with step information and a tree with variables for
-  //storing the step information if needed
-  //fOutputFile.open("StepInformationFile.txt",std::ios::trunc);
-
-  
-  
+  // Open output file and write header
+  fOutputFile.open("phonon_steps.txt", std::ios::trunc);
+  fOutputFile << "# run  event  track  particle  "
+              << "preX_mm  preY_mm  preZ_mm  preE_eV  preKE_eV  "
+              << "postX_mm  postY_mm  postZ_mm  postE_eV  postKE_eV  "
+              << "preT_ns  postT_ns  "
+              << "process\n";
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 RISQTutorialSteppingAction::~RISQTutorialSteppingAction()
 {
-  //fOutputFile.close();
+  fOutputFile.close();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//Alternative constructor
-void RISQTutorialSteppingAction::UserSteppingAction( const G4Step * step )
-{
-  //For now, simple: look at the pre-step point volume name and the track name
-  //  std::cout << "REL stepping. PreSP volume name: " << step->GetPreStepPoint()->GetPhysicalVolume()->GetName() << ", track particle type: " << step->GetTrack()->GetParticleDefinition()->GetParticleName() << std::endl;
 
-  //First up: do generic exporting of step information (no cuts made here)
-  //ExportStepInformation(step);
-  
-  
-  return;
+void RISQTutorialSteppingAction::UserSteppingAction(const G4Step* step)
+{
+  // Only record phonon tracks
+  G4String pname = step->GetTrack()->GetParticleDefinition()->GetParticleName();
+  if (pname != "phononL" && pname != "phononTF" && pname != "phononTS") return;
+
+  ExportStepInformation(step);
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-// Do a set of queries of information to test for anharmonic decay
-void RISQTutorialSteppingAction::ExportStepInformation( const G4Step * step )
+
+void RISQTutorialSteppingAction::ExportStepInformation(const G4Step* step)
 {
-  //Test
-  G4StepPoint * preSP = step->GetPreStepPoint();
-  G4StepPoint * postSP = step->GetPostStepPoint();
+  G4StepPoint* preSP  = step->GetPreStepPoint();
+  G4StepPoint* postSP = step->GetPostStepPoint();
 
-  int runNo = G4RunManager::GetRunManager()->GetCurrentRun()->GetRunID();
-  int eventNo = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
-  int trackNo = step->GetTrack()->GetTrackID();
-  std::string particleName = step->GetTrack()->GetParticleDefinition()->GetParticleName();
-  double preStepX_mm = preSP->GetPosition().x() / CLHEP::mm;
-  double preStepY_mm = preSP->GetPosition().y() / CLHEP::mm;
-  double preStepZ_mm = preSP->GetPosition().z() / CLHEP::mm;
-  double preStepEnergy_eV = preSP->GetTotalEnergy() / CLHEP::eV;
-  double preStepKinEnergy_eV = preSP->GetKineticEnergy() / CLHEP::eV;
-  
-  double postStepX_mm = postSP->GetPosition().x() / CLHEP::mm;
-  double postStepY_mm = postSP->GetPosition().y() / CLHEP::mm;
-  double postStepZ_mm = postSP->GetPosition().z() / CLHEP::mm; 
-  double postStepEnergy_eV = postSP->GetTotalEnergy() / CLHEP::eV;
-  double postStepKinEnergy_eV = postSP->GetKineticEnergy() / CLHEP::eV;
+  int runNo    = G4RunManager::GetRunManager()->GetCurrentRun()->GetRunID();
+  int eventNo  = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+  int trackNo  = step->GetTrack()->GetTrackID();
 
-  std::string stepProcess = postSP->GetProcessDefinedStep()->GetProcessName();
-  
-  //Fill the output file with the step info
-  fOutputFile << runNo << " " << eventNo << " " << trackNo << " " << particleName << " "
-	      << preStepX_mm << " " << preStepY_mm << " " << preStepZ_mm << " " << preStepEnergy_eV << " " << preStepKinEnergy_eV << " " 
-	      << postStepX_mm << " " << postStepY_mm << " " << postStepZ_mm << " " << postStepEnergy_eV << " " << postStepKinEnergy_eV
-	      << " " << stepProcess << std::endl;
+  std::string particleName =
+      step->GetTrack()->GetParticleDefinition()->GetParticleName();
 
-  
-  
+  // Pre-step
+  double preX  = preSP->GetPosition().x() / CLHEP::mm;
+  double preY  = preSP->GetPosition().y() / CLHEP::mm;
+  double preZ  = preSP->GetPosition().z() / CLHEP::mm;
+  double preE  = preSP->GetTotalEnergy()  / CLHEP::eV;
+  double preKE = preSP->GetKineticEnergy()/ CLHEP::eV;
+  double preT  = preSP->GetGlobalTime()   / CLHEP::ns;
+
+  // Post-step
+  double postX  = postSP->GetPosition().x() / CLHEP::mm;
+  double postY  = postSP->GetPosition().y() / CLHEP::mm;
+  double postZ  = postSP->GetPosition().z() / CLHEP::mm;
+  double postE  = postSP->GetTotalEnergy()  / CLHEP::eV;
+  double postKE = postSP->GetKineticEnergy()/ CLHEP::eV;
+  double postT  = postSP->GetGlobalTime()   / CLHEP::ns;
+
+  // Process that ended this step
+  std::string process = "unknown";
+  if (postSP->GetProcessDefinedStep())
+    process = postSP->GetProcessDefinedStep()->GetProcessName();
+
+  fOutputFile
+      << runNo      << " "
+      << eventNo    << " "
+      << trackNo    << " "
+      << particleName << " "
+      << preX       << " " << preY  << " " << preZ  << " "
+      << preE       << " " << preKE << " "
+      << postX      << " " << postY << " " << postZ << " "
+      << postE      << " " << postKE << " "
+      << preT       << " " << postT << " "
+      << process    << "\n";
 }

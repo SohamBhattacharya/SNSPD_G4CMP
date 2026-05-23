@@ -120,8 +120,8 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
   // ── Silicon slab: 8 x 8 x 0.525 mm ───────────────────────────────────────
   // Half-lengths passed to G4Box constructor
   G4Box* solid_Si = new G4Box("SiSlab_solid",
-                               4.000*mm,   // half X  →  8 mm total
-                               4.000*mm,   // half Y  →  8 mm total
+                               5.000*mm,   // half X  →  8 mm total
+                               5.000*mm,   // half Y  →  8 mm total
                                0.2625*mm); // half Z  →  0.525 mm total
 
   G4LogicalVolume* log_Si = new G4LogicalVolume(solid_Si, fSilicon,
@@ -140,7 +140,7 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
   // At ballistic phonon speeds in Si (~5000 m/s), 1 ns ≈ 5 µm travel.
   // Increase to e.g. 100*ns to allow more bounces across the 525 µm slab.
   G4UserLimits* timeCut = new G4UserLimits();
-  timeCut->SetUserMaxTime(100.0 * CLHEP::nanosecond);
+  timeCut->SetUserMaxTime(1.0 * CLHEP::nanosecond);
   log_Si->SetUserLimits(timeCut);
 
   // ── G4CMP lattice ─────────────────────────────────────────────────────────

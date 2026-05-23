@@ -1,57 +1,22 @@
 /run/initialize
 
-/vis/open OFFSCREEN
-/vis/drawVolume
+# Batch mode — no visualization, full step output to phonon_steps.txt
+/tracking/verbose 2
+/tracking/storeTrajectory 0
 
-/tracking/storeTrajectory 1
-/vis/scene/endOfEventAction accumulate
-/vis/scene/add/trajectories
-
-/vis/modeling/trajectories/create/drawByParticleID
-/vis/modeling/trajectories/drawByParticleID-0/set proton White
-/vis/modeling/trajectories/drawByParticleID-0/set e- Yellow
-/vis/modeling/trajectories/drawByParticleID-0/set G4CMPDriftElectron Violet
-/vis/modeling/trajectories/drawByParticleID-0/set G4CMPDriftHole Orange
-/vis/modeling/trajectories/drawByParticleID-0/set phononTS Red
-/vis/modeling/trajectories/drawByParticleID-0/set phononTF Green
-/vis/modeling/trajectories/drawByParticleID-0/set phononL Blue
-
-/vis/viewer/set/style wireframe
-/vis/viewer/set/hiddenMarker true
-
+# G4CMP: produce both phonons and charges from the proton shower
 /g4cmp/producePhonons 1.0
-/g4cmp/sampleLuke 1.0
 /g4cmp/produceCharges 1.0
+/g4cmp/sampleLuke     1.0
 
+# 120 GeV proton entering the slab from above (-Z face)
+# Slab Z runs from -0.2625 mm to +0.2625 mm
+# Proton fires downward in -Z direction from just above the slab
 /gps/number 1
 /gps/particle proton
 /gps/pos/type Point
-/gps/direction 0 -4 -1
-/gps/pos/centre 0.0 0.5 0.56 cm
+/gps/pos/centre 0.0 0.0 0.5 mm
+/gps/direction 0 0 -1
 /gps/ene/type Mono
 /gps/energy 120 GeV
 /run/beamOn 1
-
-# Top view (+Z axis looking down)
-/vis/viewer/set/upVector 0 1 0
-/vis/viewer/set/viewpointThetaPhi 0 0
-/vis/viewer/zoom 1.6
-/vis/ogl/set/printFilename proton_view_top
-/vis/ogl/set/printMode pixmap
-/vis/ogl/printEPS
-
-# Side view (+X axis)
-/vis/viewer/set/upVector 0 0 1
-/vis/viewer/set/viewpointThetaPhi 90 0
-/vis/viewer/zoom 1.6
-/vis/ogl/set/printFilename proton_view_side_x
-/vis/ogl/set/printMode pixmap
-/vis/ogl/printEPS
-
-# Front view (+Y axis)
-/vis/viewer/set/upVector 0 0 1
-/vis/viewer/set/viewpointThetaPhi 90 90
-/vis/viewer/zoom 1.6
-/vis/ogl/set/printFilename proton_view_side_y
-/vis/ogl/set/printMode pixmap
-/vis/ogl/printEPS
