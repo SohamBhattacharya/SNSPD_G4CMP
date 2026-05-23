@@ -41,6 +41,17 @@ private:
   G4Material* fTungsten;
   G4Material* fSilicon;
   G4Material* fNiobium;
+  
+  // ADD THESE:
+  G4Material* SiO2;
+  G4Material* AirMat;
+  G4Material* VacuumMat;
+  G4Material* CuMat;
+  G4Material* AlMat;
+  G4Material* Si3N4Mat;
+  G4Material* aSiMat;
+  G4Material* WSiMat;
+  
   G4VPhysicalVolume* fWorldPhys;
 
   G4CMPSurfaceProperty* fSiNbInterface;

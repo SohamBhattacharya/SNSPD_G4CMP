@@ -336,3 +336,14 @@ Here, the muon is ACTUALLY right under a qubit, which leads to a significantly h
 > [!TIP]
 > Homework problem: We're taking a naive sum of all hit energies over time in the above plots. Can you make a plot of the time series of the hits seen by each qubit? Challenge question: how would you go about scaling an "energy-deposited-vs-time" plot to account for the downsampling?
 
+# Greales Comments
+
+This section summarizes changes from first commit and how to run for myself.
+
+## How to run 
+
+Run within apptainer / singularity
+singularity run ~/ubuntu-sandbox/ ./RISQTutorial
+
+Run with macros in Qt
+/control/execute ../G4Macros/throwMuon.mac
