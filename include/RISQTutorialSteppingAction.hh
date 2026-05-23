@@ -8,7 +8,6 @@
 
 #include "G4UserSteppingAction.hh"
 #include "globals.hh"
-#include <fstream>
 #include <set>
 
 class G4Step;
@@ -19,10 +18,9 @@ public:
   RISQTutorialSteppingAction();
   virtual ~RISQTutorialSteppingAction();
   virtual void UserSteppingAction(const G4Step* step);
-  void ExportStepInformation(const G4Step* step);
 
 private:
-  std::ofstream fOutputFile;
+  std::set<G4String> fSeenParticles;
 };
 
 #endif

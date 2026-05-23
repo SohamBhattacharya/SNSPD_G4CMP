@@ -347,3 +347,5 @@ singularity run ~/ubuntu-sandbox/ ./RISQTutorial
 
 Run with macros in Qt
 /control/execute ../G4Macros/throwPhonon_slab.mac
+/control/execute ../G4Macros/gun_slab.mac
+

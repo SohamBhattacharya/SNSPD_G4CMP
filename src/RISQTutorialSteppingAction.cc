@@ -3,93 +3,141 @@
  * License version 3 or later. See G4CMP/LICENSE for the full license. *
 \***********************************************************************/
 
-// Stepping action — exports full per-step information for all phonon tracks.
+// Stepping action — fills ROOT ntuple and kills tracks whose
+// post-step global time exceeds a configurable threshold.
 
 #include "RISQTutorialSteppingAction.hh"
-#include <iostream>
-#include "globals.hh"
-#include "G4Run.hh"
-#include "G4Track.hh"
+#include "g4root.hh"
 #include "G4Step.hh"
-#include "G4Threading.hh"
-#include "G4RunManager.hh"
+#include "G4Track.hh"
 #include "G4StepPoint.hh"
+#include "G4RunManager.hh"
+#include "G4Run.hh"
+#include "globals.hh"
+
+// ── Kill threshold — change this value to adjust the time cut ─────────────
+// Units: nanoseconds.  At ~5 mm/ns ballistic speed in Si:
+//   100 ns ≈ ~500 mm total path  (~1000 bounces across the 0.525 mm slab)
+//   10  ns ≈ ~50  mm total path  (~100 bounces)
+static constexpr G4double kMaxGlobalTime = 100.0 * CLHEP::ns;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 RISQTutorialSteppingAction::RISQTutorialSteppingAction()
 {
-  // Open output file and write header
-  fOutputFile.open("phonon_steps.txt", std::ios::trunc);
-  fOutputFile << "# run  event  track  particle  "
-              << "preX_mm  preY_mm  preZ_mm  preE_eV  preKE_eV  "
-              << "postX_mm  postY_mm  postZ_mm  postE_eV  postKE_eV  "
-              << "preT_ns  postT_ns  "
-              << "process\n";
+  G4cout << "### SteppingAction: writing steps to ROOT ntuple" << G4endl;
+  G4cout << "### SteppingAction: killing tracks after "
+         << kMaxGlobalTime / CLHEP::ns << " ns" << G4endl;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-
-RISQTutorialSteppingAction::~RISQTutorialSteppingAction()
-{
-  fOutputFile.close();
-}
+RISQTutorialSteppingAction::~RISQTutorialSteppingAction() {;}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 void RISQTutorialSteppingAction::UserSteppingAction(const G4Step* step)
 {
-  // Only record phonon tracks
-  G4String pname = step->GetTrack()->GetParticleDefinition()->GetParticleName();
-  if (pname != "phononL" && pname != "phononTF" && pname != "phononTS") return;
+  G4String pname = step->GetTrack()
+                       ->GetParticleDefinition()
+                       ->GetParticleName();
 
-  ExportStepInformation(step);
-}
+  // Debug: print first occurrence of each particle type
+  if (fSeenParticles.find(pname) == fSeenParticles.end()) {
+    G4cout << "### SteppingAction: first step for particle: "
+           << pname << G4endl;
+    fSeenParticles.insert(pname);
+  }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+  // Map particle name → integer type; skip non-phonon tracks
+// In UserSteppingAction, replace the current particle filter with:
+G4int ptype = 0;
+if      (pname == "phononL")            ptype = 1;
+else if (pname == "phononTF")           ptype = 2;
+else if (pname == "phononTS")           ptype = 3;
+else if (pname == "G4CMPDriftElectron") ptype = 4;
+else if (pname == "G4CMPDriftHole")     ptype = 5;
+else if (pname == "e-")                 ptype = 6;
+else if (pname == "e+")                 ptype = 7;
+else if (pname == "gamma")              ptype = 8;
+else if (pname == "proton")             ptype = 9;
+else if (pname == "neutron")            ptype = 10;
+else if (pname == "pi+")               ptype = 11;
+else if (pname == "pi-")               ptype = 12;
+else if (pname == "pi0")               ptype = 13;
+else if (pname == "kaon+")             ptype = 14;
+else if (pname == "kaon-")             ptype = 15;
+else if (pname == "mu+")               ptype = 16;
+else if (pname == "mu-")               ptype = 17;
+else                                    ptype = 99; // catch-all for anything else
+// Remove the `else return` — store everything
 
-void RISQTutorialSteppingAction::ExportStepInformation(const G4Step* step)
-{
-  G4StepPoint* preSP  = step->GetPreStepPoint();
-  G4StepPoint* postSP = step->GetPostStepPoint();
+// Then fill ntuple as before
+  // ── Collect step data ──────────────────────────────────────────────────────
+  G4StepPoint* pre  = step->GetPreStepPoint();
+  G4StepPoint* post = step->GetPostStepPoint();
 
-  int runNo    = G4RunManager::GetRunManager()->GetCurrentRun()->GetRunID();
-  int eventNo  = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
-  int trackNo  = step->GetTrack()->GetTrackID();
+  G4int runNo   = G4RunManager::GetRunManager()
+                    ->GetCurrentRun()->GetRunID();
+  G4int eventNo = G4RunManager::GetRunManager()
+                    ->GetCurrentEvent()->GetEventID();
+  G4int trackID = step->GetTrack()->GetTrackID();
 
-  std::string particleName =
-      step->GetTrack()->GetParticleDefinition()->GetParticleName();
+  G4double preX  = pre->GetPosition().x()  / CLHEP::mm;
+  G4double preY  = pre->GetPosition().y()  / CLHEP::mm;
+  G4double preZ  = pre->GetPosition().z()  / CLHEP::mm;
+  G4double preE  = pre->GetTotalEnergy()   / CLHEP::eV;
+  G4double preKE = pre->GetKineticEnergy() / CLHEP::eV;
+  G4double preT  = pre->GetGlobalTime()    / CLHEP::ns;
 
-  // Pre-step
-  double preX  = preSP->GetPosition().x() / CLHEP::mm;
-  double preY  = preSP->GetPosition().y() / CLHEP::mm;
-  double preZ  = preSP->GetPosition().z() / CLHEP::mm;
-  double preE  = preSP->GetTotalEnergy()  / CLHEP::eV;
-  double preKE = preSP->GetKineticEnergy()/ CLHEP::eV;
-  double preT  = preSP->GetGlobalTime()   / CLHEP::ns;
+  G4double postX  = post->GetPosition().x()  / CLHEP::mm;
+  G4double postY  = post->GetPosition().y()  / CLHEP::mm;
+  G4double postZ  = post->GetPosition().z()  / CLHEP::mm;
+  G4double postE  = post->GetTotalEnergy()   / CLHEP::eV;
+  G4double postKE = post->GetKineticEnergy() / CLHEP::eV;
+  G4double postT  = post->GetGlobalTime()    / CLHEP::ns;
 
-  // Post-step
-  double postX  = postSP->GetPosition().x() / CLHEP::mm;
-  double postY  = postSP->GetPosition().y() / CLHEP::mm;
-  double postZ  = postSP->GetPosition().z() / CLHEP::mm;
-  double postE  = postSP->GetTotalEnergy()  / CLHEP::eV;
-  double postKE = postSP->GetKineticEnergy()/ CLHEP::eV;
-  double postT  = postSP->GetGlobalTime()   / CLHEP::ns;
+  G4double stepLen = step->GetStepLength()         / CLHEP::mm;
+  G4double edep    = step->GetTotalEnergyDeposit() / CLHEP::eV;
 
-  // Process that ended this step
-  std::string process = "unknown";
-  if (postSP->GetProcessDefinedStep())
-    process = postSP->GetProcessDefinedStep()->GetProcessName();
+  G4int procID = 0;
+  if (post->GetProcessDefinedStep()) {
+    G4String proc = post->GetProcessDefinedStep()->GetProcessName();
+    if      (proc.find("phononScattering")     != G4String::npos) procID = 1;
+    else if (proc.find("phononDownconversion") != G4String::npos) procID = 2;
+    else if (proc.find("phononReflection")     != G4String::npos) procID = 3;
+    else if (proc.find("Transportation")       != G4String::npos) procID = 4;
+    else if (proc.find("UserMaxTime")          != G4String::npos) procID = 5;
+  }
 
-  fOutputFile
-      << runNo      << " "
-      << eventNo    << " "
-      << trackNo    << " "
-      << particleName << " "
-      << preX       << " " << preY  << " " << preZ  << " "
-      << preE       << " " << preKE << " "
-      << postX      << " " << postY << " " << postZ << " "
-      << postE      << " " << postKE << " "
-      << preT       << " " << postT << " "
-      << process    << "\n";
+  // ── Fill ntuple row ────────────────────────────────────────────────────────
+  auto am = G4RootAnalysisManager::Instance();
+  const G4int id = 0;
+  G4int col = 0;
+  am->FillNtupleIColumn(id, col++, runNo);
+  am->FillNtupleIColumn(id, col++, eventNo);
+  am->FillNtupleIColumn(id, col++, trackID);
+  am->FillNtupleIColumn(id, col++, ptype);
+  am->FillNtupleDColumn(id, col++, preX);
+  am->FillNtupleDColumn(id, col++, preY);
+  am->FillNtupleDColumn(id, col++, preZ);
+  am->FillNtupleDColumn(id, col++, preE);
+  am->FillNtupleDColumn(id, col++, preKE);
+  am->FillNtupleDColumn(id, col++, preT);
+  am->FillNtupleDColumn(id, col++, postX);
+  am->FillNtupleDColumn(id, col++, postY);
+  am->FillNtupleDColumn(id, col++, postZ);
+  am->FillNtupleDColumn(id, col++, postE);
+  am->FillNtupleDColumn(id, col++, postKE);
+  am->FillNtupleDColumn(id, col++, postT);
+  am->FillNtupleDColumn(id, col++, stepLen);
+  am->FillNtupleDColumn(id, col++, edep);
+  am->FillNtupleIColumn(id, col++, procID);
+  am->AddNtupleRow(id);
+
+  // ── Time cut — kill track if post-step time exceeds threshold ─────────────
+  // Checked AFTER filling the ntuple so the final step is still recorded.
+  // GetGlobalTime() returns time in Geant4 internal units, so compare
+  // directly against kMaxGlobalTime (also in internal units).
+  if (post->GetGlobalTime() >= kMaxGlobalTime) {
+    step->GetTrack()->SetTrackStatus(fStopAndKill);
+  }
 }
