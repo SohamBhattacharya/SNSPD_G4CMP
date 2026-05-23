@@ -6,21 +6,122 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialActionInitialization.cc.o
  ../include/RISQTutorialPrimaryGeneratorAction.hh
  ../include/RISQTutorialSteppingAction.hh
  /home/guillermo/Programming/G4CMP/examples/RISQTutorial/src/RISQTutorialActionInitialization.cc
+ /opt/G4CMP/G4CMP-install/include/G4CMP/G4CMPProcessUtils.hh
+ /opt/G4CMP/G4CMP-install/include/G4CMP/G4CMPStackingAction.hh
+ /opt/geant4-install/include/Geant4/CLHEP/Geometry/BasicVector3D.h
+ /opt/geant4-install/include/Geant4/CLHEP/Geometry/Normal3D.h
+ /opt/geant4-install/include/Geant4/CLHEP/Geometry/Point3D.h
+ /opt/geant4-install/include/Geant4/CLHEP/Geometry/Transform3D.h
+ /opt/geant4-install/include/Geant4/CLHEP/Geometry/Transform3D.icc
+ /opt/geant4-install/include/Geant4/CLHEP/Geometry/Vector3D.h
+ /opt/geant4-install/include/Geant4/CLHEP/Units/PhysicalConstants.h
+ /opt/geant4-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
+ /opt/geant4-install/include/Geant4/CLHEP/Utility/defs.h
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/AxisAngle.h
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/AxisAngle.icc
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/LorentzVector.h
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/LorentzVector.icc
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/Rotation.h
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/Rotation.icc
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/RotationInterfaces.h
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/RotationInterfaces.icc
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/RotationX.h
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/RotationX.icc
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/RotationY.h
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/RotationY.icc
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/RotationZ.h
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/RotationZ.icc
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/ThreeVector.h
+ /opt/geant4-install/include/Geant4/CLHEP/Vector/ThreeVector.icc
+ /opt/geant4-install/include/Geant4/G4AffineTransform.hh
+ /opt/geant4-install/include/Geant4/G4AffineTransform.icc
+ /opt/geant4-install/include/Geant4/G4Allocator.hh
+ /opt/geant4-install/include/Geant4/G4AllocatorPool.hh
+ /opt/geant4-install/include/Geant4/G4AutoLock.hh
+ /opt/geant4-install/include/Geant4/G4ClassificationOfNewTrack.hh
+ /opt/geant4-install/include/Geant4/G4DataVector.hh
+ /opt/geant4-install/include/Geant4/G4DataVector.icc
+ /opt/geant4-install/include/Geant4/G4DynamicParticle.hh
+ /opt/geant4-install/include/Geant4/G4DynamicParticle.icc
+ /opt/geant4-install/include/Geant4/G4ElectronOccupancy.hh
+ /opt/geant4-install/include/Geant4/G4Element.hh
+ /opt/geant4-install/include/Geant4/G4ElementTable.hh
+ /opt/geant4-install/include/Geant4/G4ElementVector.hh
  /opt/geant4-install/include/Geant4/G4EnvironmentUtils.hh
  /opt/geant4-install/include/Geant4/G4Exception.hh
  /opt/geant4-install/include/Geant4/G4ExceptionSeverity.hh
+ /opt/geant4-install/include/Geant4/G4Exp.hh
+ /opt/geant4-install/include/Geant4/G4GeomSplitter.hh
  /opt/geant4-install/include/Geant4/G4GlobalConfig.hh
+ /opt/geant4-install/include/Geant4/G4IonisParamElm.hh
+ /opt/geant4-install/include/Geant4/G4IonisParamMat.hh
+ /opt/geant4-install/include/Geant4/G4Isotope.hh
+ /opt/geant4-install/include/Geant4/G4IsotopeVector.hh
+ /opt/geant4-install/include/Geant4/G4Log.hh
+ /opt/geant4-install/include/Geant4/G4LogicalVolume.hh
+ /opt/geant4-install/include/Geant4/G4LogicalVolume.icc
+ /opt/geant4-install/include/Geant4/G4LorentzVector.hh
+ /opt/geant4-install/include/Geant4/G4Material.hh
+ /opt/geant4-install/include/Geant4/G4MaterialPropertiesIndex.hh
+ /opt/geant4-install/include/Geant4/G4MaterialPropertiesTable.hh
+ /opt/geant4-install/include/Geant4/G4MaterialPropertiesTable.icc
+ /opt/geant4-install/include/Geant4/G4MaterialPropertyVector.hh
+ /opt/geant4-install/include/Geant4/G4MaterialTable.hh
+ /opt/geant4-install/include/Geant4/G4OrderedTable.hh
+ /opt/geant4-install/include/Geant4/G4PDefManager.hh
+ /opt/geant4-install/include/Geant4/G4ParticleDefinition.hh
+ /opt/geant4-install/include/Geant4/G4ParticleDefinition.icc
+ /opt/geant4-install/include/Geant4/G4ParticleMomentum.hh
+ /opt/geant4-install/include/Geant4/G4PhysicsModelCatalog.hh
+ /opt/geant4-install/include/Geant4/G4PhysicsOrderedFreeVector.hh
+ /opt/geant4-install/include/Geant4/G4PhysicsVector.hh
+ /opt/geant4-install/include/Geant4/G4PhysicsVector.icc
+ /opt/geant4-install/include/Geant4/G4PhysicsVectorType.hh
+ /opt/geant4-install/include/Geant4/G4Profiler.hh
+ /opt/geant4-install/include/Geant4/G4Profiler.icc
+ /opt/geant4-install/include/Geant4/G4ReferenceCountedHandle.hh
+ /opt/geant4-install/include/Geant4/G4Region.hh
+ /opt/geant4-install/include/Geant4/G4Region.icc
+ /opt/geant4-install/include/Geant4/G4RotationMatrix.hh
+ /opt/geant4-install/include/Geant4/G4SandiaTable.hh
+ /opt/geant4-install/include/Geant4/G4Step.hh
+ /opt/geant4-install/include/Geant4/G4Step.icc
+ /opt/geant4-install/include/Geant4/G4StepPoint.hh
+ /opt/geant4-install/include/Geant4/G4StepPoint.icc
+ /opt/geant4-install/include/Geant4/G4StepStatus.hh
+ /opt/geant4-install/include/Geant4/G4SteppingControl.hh
  /opt/geant4-install/include/Geant4/G4String.hh
  /opt/geant4-install/include/Geant4/G4String.icc
+ /opt/geant4-install/include/Geant4/G4Threading.hh
+ /opt/geant4-install/include/Geant4/G4ThreeVector.hh
+ /opt/geant4-install/include/Geant4/G4TouchableHandle.hh
+ /opt/geant4-install/include/Geant4/G4Track.hh
+ /opt/geant4-install/include/Geant4/G4Track.icc
+ /opt/geant4-install/include/Geant4/G4TrackStatus.hh
+ /opt/geant4-install/include/Geant4/G4TrackVector.hh
+ /opt/geant4-install/include/Geant4/G4Transform3D.hh
  /opt/geant4-install/include/Geant4/G4Types.hh
+ /opt/geant4-install/include/Geant4/G4UserStackingAction.hh
  /opt/geant4-install/include/Geant4/G4UserSteppingAction.hh
  /opt/geant4-install/include/Geant4/G4VExceptionHandler.hh
+ /opt/geant4-install/include/Geant4/G4VPhysicalVolume.hh
+ /opt/geant4-install/include/Geant4/G4VPhysicalVolume.icc
+ /opt/geant4-install/include/Geant4/G4VTouchable.hh
+ /opt/geant4-install/include/Geant4/G4VTouchable.icc
  /opt/geant4-install/include/Geant4/G4VUserActionInitialization.hh
  /opt/geant4-install/include/Geant4/G4VUserPrimaryGeneratorAction.hh
+ /opt/geant4-install/include/Geant4/G4VUserTrackInformation.hh
  /opt/geant4-install/include/Geant4/G4ios.hh
+ /opt/geant4-install/include/Geant4/geomdefs.hh
+ /opt/geant4-install/include/Geant4/geomwdefs.hh
  /opt/geant4-install/include/Geant4/globals.hh
+ /opt/geant4-install/include/Geant4/pwdefs.hh
  /opt/geant4-install/include/Geant4/templates.hh
  /opt/geant4-install/include/Geant4/tls.hh
+ /opt/geant4-install/include/Geant4/trkdefs.hh
+ /opt/geant4-install/include/PTL/Globals.hh
+ /opt/geant4-install/include/PTL/Types.hh
+ /opt/geant4-install/include/PTL/Utility.hh
 CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialConfigManager.cc.o
  ../include/RISQTutorialConfigManager.hh
  ../include/RISQTutorialConfigMessenger.hh
@@ -610,15 +711,8 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialCornerFluxLine.cc.o
  /opt/geant4-install/include/PTL/Types.hh
  /opt/geant4-install/include/PTL/Utility.hh
 CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialDetectorConstruction.cc.o
- ../include/RISQTutorialCornerFluxLine.hh
  ../include/RISQTutorialDetectorConstruction.hh
- ../include/RISQTutorialDetectorParameters.hh
- ../include/RISQTutorialPad.hh
- ../include/RISQTutorialQubitHousing.hh
- ../include/RISQTutorialResonatorAssembly.hh
  ../include/RISQTutorialSensitivity.hh
- ../include/RISQTutorialStraightFluxLine.hh
- ../include/RISQTutorialTransmissionLine.hh
  /home/guillermo/Programming/G4CMP/examples/RISQTutorial/src/RISQTutorialDetectorConstruction.cc
  /opt/G4CMP/G4CMP-install/include/G4CMP/G4CMPCrystalGroup.hh
  /opt/G4CMP/G4CMP-install/include/G4CMP/G4CMPElectrodeHit.hh
@@ -713,8 +807,6 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialDetectorConstruction.cc.o
  /opt/geant4-install/include/Geant4/G4AuxiliaryNavServices.icc
  /opt/geant4-install/include/Geant4/G4BlockingList.hh
  /opt/geant4-install/include/Geant4/G4BlockingList.icc
- /opt/geant4-install/include/Geant4/G4BooleanSolid.hh
- /opt/geant4-install/include/Geant4/G4BooleanSolid.icc
  /opt/geant4-install/include/Geant4/G4BoundingEnvelope.hh
  /opt/geant4-install/include/Geant4/G4Box.hh
  /opt/geant4-install/include/Geant4/G4Box.icc
@@ -726,7 +818,6 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialDetectorConstruction.cc.o
  /opt/geant4-install/include/Geant4/G4DCofThisEvent.hh
  /opt/geant4-install/include/Geant4/G4DataVector.hh
  /opt/geant4-install/include/Geant4/G4DataVector.icc
- /opt/geant4-install/include/Geant4/G4DisplacedSolid.hh
  /opt/geant4-install/include/Geant4/G4DynamicParticle.hh
  /opt/geant4-install/include/Geant4/G4DynamicParticle.icc
  /opt/geant4-install/include/Geant4/G4ElectronOccupancy.hh
@@ -740,9 +831,6 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialDetectorConstruction.cc.o
  /opt/geant4-install/include/Geant4/G4ExceptionSeverity.hh
  /opt/geant4-install/include/Geant4/G4Exp.hh
  /opt/geant4-install/include/Geant4/G4FastVector.hh
- /opt/geant4-install/include/Geant4/G4Field.hh
- /opt/geant4-install/include/Geant4/G4FieldManager.hh
- /opt/geant4-install/include/Geant4/G4FieldManager.icc
  /opt/geant4-install/include/Geant4/G4ForceCondition.hh
  /opt/geant4-install/include/Geant4/G4GPILSelection.hh
  /opt/geant4-install/include/Geant4/G4GRSSolid.hh
@@ -769,7 +857,6 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialDetectorConstruction.cc.o
  /opt/geant4-install/include/Geant4/G4LogicalVolume.icc
  /opt/geant4-install/include/Geant4/G4LogicalVolumeStore.hh
  /opt/geant4-install/include/Geant4/G4LorentzVector.hh
- /opt/geant4-install/include/Geant4/G4MagneticField.hh
  /opt/geant4-install/include/Geant4/G4Material.hh
  /opt/geant4-install/include/Geant4/G4MaterialPropertiesIndex.hh
  /opt/geant4-install/include/Geant4/G4MaterialPropertiesTable.hh
@@ -839,7 +926,6 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialDetectorConstruction.cc.o
  /opt/geant4-install/include/Geant4/G4RunManagerKernel.hh
  /opt/geant4-install/include/Geant4/G4SDManager.hh
  /opt/geant4-install/include/Geant4/G4SDStructure.hh
- /opt/geant4-install/include/Geant4/G4SafetyHelper.hh
  /opt/geant4-install/include/Geant4/G4SandiaTable.hh
  /opt/geant4-install/include/Geant4/G4SensitiveVolumeList.hh
  /opt/geant4-install/include/Geant4/G4SmartTrackStack.hh
@@ -851,8 +937,6 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialDetectorConstruction.cc.o
  /opt/geant4-install/include/Geant4/G4SmartVoxelProxy.icc
  /opt/geant4-install/include/Geant4/G4SmartVoxelStat.hh
  /opt/geant4-install/include/Geant4/G4SolidStore.hh
- /opt/geant4-install/include/Geant4/G4Sphere.hh
- /opt/geant4-install/include/Geant4/G4Sphere.icc
  /opt/geant4-install/include/Geant4/G4StackManager.hh
  /opt/geant4-install/include/Geant4/G4StackedTrack.hh
  /opt/geant4-install/include/Geant4/G4Step.hh
@@ -883,10 +967,6 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialDetectorConstruction.cc.o
  /opt/geant4-install/include/Geant4/G4TrackingMessenger.hh
  /opt/geant4-install/include/Geant4/G4TrajectoryContainer.hh
  /opt/geant4-install/include/Geant4/G4Transform3D.hh
- /opt/geant4-install/include/Geant4/G4TransportationManager.hh
- /opt/geant4-install/include/Geant4/G4TransportationManager.icc
- /opt/geant4-install/include/Geant4/G4Tubs.hh
- /opt/geant4-install/include/Geant4/G4Tubs.icc
  /opt/geant4-install/include/Geant4/G4Types.hh
  /opt/geant4-install/include/Geant4/G4UAdapter.hh
  /opt/geant4-install/include/Geant4/G4UBox.hh
@@ -895,10 +975,6 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialDetectorConstruction.cc.o
  /opt/geant4-install/include/Geant4/G4UImessenger.hh
  /opt/geant4-install/include/Geant4/G4UIparameter.hh
  /opt/geant4-install/include/Geant4/G4UItokenNum.hh
- /opt/geant4-install/include/Geant4/G4USphere.hh
- /opt/geant4-install/include/Geant4/G4UTubs.hh
- /opt/geant4-install/include/Geant4/G4UniformMagField.hh
- /opt/geant4-install/include/Geant4/G4UnionSolid.hh
  /opt/geant4-install/include/Geant4/G4UserLimits.hh
  /opt/geant4-install/include/Geant4/G4UserLimits.icc
  /opt/geant4-install/include/Geant4/G4UserStackingAction.hh
@@ -1263,6 +1339,9 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialPad.cc.o
 CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialPrimaryGeneratorAction.cc.o
  ../include/RISQTutorialPrimaryGeneratorAction.hh
  /home/guillermo/Programming/G4CMP/examples/RISQTutorial/src/RISQTutorialPrimaryGeneratorAction.cc
+ /opt/G4CMP/G4CMP-install/include/G4CMP/G4PhononLong.hh
+ /opt/G4CMP/G4CMP-install/include/G4CMP/G4PhononTransFast.hh
+ /opt/G4CMP/G4CMP-install/include/G4CMP/G4PhononTransSlow.hh
  /opt/geant4-install/include/Geant4/CLHEP/Geometry/BasicVector3D.h
  /opt/geant4-install/include/Geant4/CLHEP/Geometry/Normal3D.h
  /opt/geant4-install/include/Geant4/CLHEP/Geometry/Point3D.h
@@ -1384,9 +1463,6 @@ CMakeFiles/RISQTutorialLib.dir/src/RISQTutorialPrimaryGeneratorAction.cc.o
  /opt/geant4-install/include/Geant4/G4ParticleDefinition.icc
  /opt/geant4-install/include/Geant4/G4ParticleGun.hh
  /opt/geant4-install/include/Geant4/G4ParticleMomentum.hh
- /opt/geant4-install/include/Geant4/G4PhononLong.hh
- /opt/geant4-install/include/Geant4/G4PhononTransFast.hh
- /opt/geant4-install/include/Geant4/G4PhononTransSlow.hh
  /opt/geant4-install/include/Geant4/G4PhysicsOrderedFreeVector.hh
  /opt/geant4-install/include/Geant4/G4PhysicsVector.hh
  /opt/geant4-install/include/Geant4/G4PhysicsVector.icc

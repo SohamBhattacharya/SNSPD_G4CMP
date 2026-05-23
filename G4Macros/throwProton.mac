@@ -1,0 +1,39 @@
+/run/initialize
+
+/vis/open OGL
+/vis/viewer/set/upVector 0 1 0
+/vis/viewer/set/viewpointVector 0 0 1
+/vis/viewer/zoom 1.4
+/vis/drawVolume
+
+/tracking/verbose 2
+/tracking/storeTrajectory 1
+/vis/scene/endOfEventAction accumulate
+/vis/scene/add/trajectories
+
+/vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/drawByParticleID-0/set proton White
+/vis/modeling/trajectories/drawByParticleID-0/set e- Yellow
+/vis/modeling/trajectories/drawByParticleID-0/set G4CMPDriftElectron Violet
+/vis/modeling/trajectories/drawByParticleID-0/set G4CMPDriftHole Orange
+/vis/modeling/trajectories/drawByParticleID-0/set phononTS Red
+/vis/modeling/trajectories/drawByParticleID-0/set phononTF Green
+/vis/modeling/trajectories/drawByParticleID-0/set phononL Blue
+
+/vis/viewer/set/style wireframe
+/vis/viewer/set/hiddenMarker true
+/vis/viewer/set/viewpointThetaPhi 0 90
+/vis/viewer/zoom 1.6
+
+/g4cmp/producePhonons 1.0
+/g4cmp/sampleLuke 1.0
+/g4cmp/produceCharges 1.0
+
+/gps/number 1
+/gps/particle proton
+/gps/pos/type Point
+/gps/direction 0 -4 -1
+/gps/pos/centre 0.0 0.5 0.56 cm
+/gps/ene/type Mono
+/gps/energy 120 GeV
+/run/beamOn 1

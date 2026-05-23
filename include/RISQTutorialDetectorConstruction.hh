@@ -6,8 +6,7 @@
 /// \file exoticphysics/phonon/include/PhononDetectorConstruction.hh
 /// \brief Definition of the RISQTutorialDetectorConstruction class
 //
-// $Id: 4c06153e9ea08f2a90b22c53e5c39bde4b847c07 $
-//
+// Simplified to a single Si slab for phonon propagation studies.
 
 #ifndef RISQTutorialDetectorConstruction_h
 #define RISQTutorialDetectorConstruction_h 1
@@ -20,52 +19,37 @@ class G4VPhysicalVolume;
 class G4CMPSurfaceProperty;
 class G4CMPElectrodeSensitivity;
 
-class RISQTutorialDetectorConstruction : public G4VUserDetectorConstruction {
+class RISQTutorialDetectorConstruction : public G4VUserDetectorConstruction
+{
 public:
   RISQTutorialDetectorConstruction();
   virtual ~RISQTutorialDetectorConstruction();
-  
-public:
+
   virtual G4VPhysicalVolume* Construct();
-  
+
 private:
   void DefineMaterials();
   void SetupGeometry();
-  void AttachPhononSensor(G4CMPSurfaceProperty * surfProp);
+  void AttachPhononSensor(G4CMPSurfaceProperty* surfProp);
 
-  
-private:
+  // Materials
   G4Material* fLiquidHelium;
   G4Material* fGermanium;
   G4Material* fAluminum;
   G4Material* fTungsten;
   G4Material* fSilicon;
   G4Material* fNiobium;
-  
-  // ADD THESE:
-  G4Material* SiO2;
-  G4Material* AirMat;
-  G4Material* VacuumMat;
-  G4Material* CuMat;
-  G4Material* AlMat;
-  G4Material* Si3N4Mat;
-  G4Material* aSiMat;
-  G4Material* WSiMat;
-  
+
+  // World physical volume
   G4VPhysicalVolume* fWorldPhys;
 
-  G4CMPSurfaceProperty* fSiNbInterface;
-  G4CMPSurfaceProperty* fSiCopperInterface;
+  // Surface property for Si/vacuum boundary
   G4CMPSurfaceProperty* fSiVacuumInterface;
 
-  
+  // Sensitive detector
   G4CMPElectrodeSensitivity* fSuperconductorSensitivity;
+
   G4bool fConstructed;
-  //G4bool fIfField;
-  
-  //public:
-  //inline void Field(G4bool bl) { fIfField = bl; }
 };
 
 #endif
-

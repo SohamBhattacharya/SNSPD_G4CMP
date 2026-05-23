@@ -1,0 +1,6 @@
+/run/initialize
+/g4cmp/producePhonons 1.0
+/g4cmp/sampleLuke 1.0
+/g4cmp/produceCharges 1.0
+/tracking/verbose 1
+/run/beamOn 1

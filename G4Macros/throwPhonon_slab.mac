@@ -1,0 +1,54 @@
+/run/initialize
+
+# Create a scene handler
+/vis/open OGL
+/vis/viewer/set/upVector 0 1 0
+/vis/viewer/set/viewpointVector 0 0 1
+/vis/viewer/zoom 1.4
+/vis/drawVolume
+
+# For drawing the tracks
+# (if too many tracks cause core dump => storeTrajectory 0)
+/tracking/verbose 2
+/tracking/storeTrajectory 1
+/vis/scene/endOfEventAction accumulate
+/vis/scene/add/trajectories
+
+# Make phonon polarization modes distinguishable
+/vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/drawByParticleID-0/set phononTS Red
+/vis/modeling/trajectories/drawByParticleID-0/set phononTF Green
+/vis/modeling/trajectories/drawByParticleID-0/set phononL Blue
+
+# Rendering options
+/vis/viewer/set/style wireframe
+/vis/viewer/set/hiddenMarker true
+/vis/viewer/set/viewpointThetaPhi 70 20
+/vis/viewer/zoom 1.6
+
+# G4CMP flags — phonons only, no charge carriers
+/g4cmp/producePhonons 1.0
+/g4cmp/produceCharges 0.0
+/g4cmp/sampleLuke    0.0
+
+# Particle generation
+# Slab centre is at (0,0,0); Z runs from -0.2625 mm to +0.2625 mm
+/gps/number 1
+/gps/particle phononL
+/gps/pos/type Point
+/gps/ang/type iso
+/gps/pos/centre 0.0 0.0 0.0 mm
+/gps/ene/type Mono
+/gps/energy 0.03 eV
+/run/beamOn 1
+
+# Re-apply colour model after run — prevents gray reset on repeated executions
+/vis/modeling/trajectories/drawByParticleID-0/set phononTS Red
+/vis/modeling/trajectories/drawByParticleID-0/set phononTF Green
+/vis/modeling/trajectories/drawByParticleID-0/set phononL Blue
+/vis/viewer/flush
+
+# Uncomment to save an EPS snapshot
+#/vis/ogl/set/printFilename throwPhonon_slab
+#/vis/ogl/set/printMode pixmap
+#/vis/ogl/printEPS

@@ -346,4 +346,4 @@ Run within apptainer / singularity
 singularity run ~/ubuntu-sandbox/ ./RISQTutorial
 
 Run with macros in Qt
-/control/execute ../G4Macros/throwMuon.mac
+/control/execute ../G4Macros/throwPhonon_slab.mac
