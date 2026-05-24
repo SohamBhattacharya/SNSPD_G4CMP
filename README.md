@@ -349,3 +349,11 @@ Run with macros in Qt
 /control/execute ../G4Macros/throwPhonon_slab.mac
 /control/execute ../G4Macros/gun_slab.mac
 
+
+### Run with your own lattices
+Change the location of the lattice data:
+
+singularity run \
+    --env G4LATTICEDATA="/home/guillermo/Programming/G4CMP/examples/RISQTutorial/CrystalMaps" \
+    ~/ubuntu-sandbox/ ./RISQTutorial ../G4Macros/throwProton_batch.mac
+

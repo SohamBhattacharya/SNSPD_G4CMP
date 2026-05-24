@@ -40,11 +40,12 @@ endif()
 #----------------------------------------------------------------------------
 # Build stuff
 #
-set(RISQTutorial_SOURCES 
+set(RISQTutorial_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialActionInitialization.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialSteppingAction.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialConfigManager.cc 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialConfigMessenger.cc 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialRunAction.cc  # <--- ADD THIS LINE HERE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialConfigManager.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialConfigMessenger.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialDetectorConstruction.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialPrimaryGeneratorAction.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RISQTutorialSensitivity.cc
