@@ -3,8 +3,8 @@
  * License version 3 or later. See G4CMP/LICENSE for the full license. *
 \***********************************************************************/
 
-// Stepping action — fills ROOT ntuple and kills tracks whose
-// post-step global time exceeds a configurable threshold.
+// Stepping action — fills ROOT ntuple with every step and kills tracks
+// whose post-step global time exceeds kMaxGlobalTime.
 
 #include "RISQTutorialSteppingAction.hh"
 #include "g4root.hh"
@@ -15,11 +15,11 @@
 #include "G4Run.hh"
 #include "globals.hh"
 
-// ── Kill threshold — change this value to adjust the time cut ─────────────
-// Units: nanoseconds.  At ~5 mm/ns ballistic speed in Si:
+// ── Kill threshold ────────────────────────────────────────────────────────────
+// At ~5 mm/ns ballistic phonon speed in Si:
 //   100 ns ≈ ~500 mm total path  (~1000 bounces across the 0.525 mm slab)
-//   10  ns ≈ ~50  mm total path  (~100 bounces)
-static constexpr G4double kMaxGlobalTime = 100.0 * CLHEP::ns;
+//    10 ns ≈ ~50  mm total path  (~100 bounces)
+static constexpr G4double kMaxGlobalTime = 40000.0 * CLHEP::ns;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
@@ -40,40 +40,37 @@ void RISQTutorialSteppingAction::UserSteppingAction(const G4Step* step)
                        ->GetParticleDefinition()
                        ->GetParticleName();
 
-  // Debug: print first occurrence of each particle type
+  // Debug: print first occurrence of each particle type seen
   if (fSeenParticles.find(pname) == fSeenParticles.end()) {
     G4cout << "### SteppingAction: first step for particle: "
            << pname << G4endl;
     fSeenParticles.insert(pname);
   }
 
-  // Map particle name → integer type; skip non-phonon tracks
-// In UserSteppingAction, replace the current particle filter with:
-G4int ptype = 0;
-if      (pname == "phononL")            ptype = 1;
-else if (pname == "phononTF")           ptype = 2;
-else if (pname == "phononTS")           ptype = 3;
-else if (pname == "G4CMPDriftElectron") ptype = 4;
-else if (pname == "G4CMPDriftHole")     ptype = 5;
-else if (pname == "e-")                 ptype = 6;
-else if (pname == "e+")                 ptype = 7;
-else if (pname == "gamma")              ptype = 8;
-else if (pname == "proton")             ptype = 9;
-else if (pname == "neutron")            ptype = 10;
-else if (pname == "pi+")               ptype = 11;
-else if (pname == "pi-")               ptype = 12;
-else if (pname == "pi0")               ptype = 13;
-else if (pname == "kaon+")             ptype = 14;
-else if (pname == "kaon-")             ptype = 15;
-else if (pname == "mu+")               ptype = 16;
-else if (pname == "mu-")               ptype = 17;
-else                                    ptype = 99; // catch-all for anything else
-// Remove the `else return` — store everything
+  // ── Map particle name → integer type ──────────────────────────────────────
+  G4int ptype = 0;
+  if      (pname == "phononL")             ptype = 1;
+  else if (pname == "phononTF")            ptype = 2;
+  else if (pname == "phononTS")            ptype = 3;
+  else if (pname == "G4CMPDriftElectron")  ptype = 4;
+  else if (pname == "G4CMPDriftHole")      ptype = 5;
+  else if (pname == "e-")                  ptype = 6;
+  else if (pname == "e+")                  ptype = 7;
+  else if (pname == "gamma")               ptype = 8;
+  else if (pname == "proton")              ptype = 9;
+  else if (pname == "neutron")             ptype = 10;
+  else if (pname == "pi+")                 ptype = 11;
+  else if (pname == "pi-")                 ptype = 12;
+  else if (pname == "pi0")                 ptype = 13;
+  else if (pname == "kaon+")              ptype = 14;
+  else if (pname == "kaon-")              ptype = 15;
+  else if (pname == "mu+")                ptype = 16;
+  else if (pname == "mu-")                ptype = 17;
+  else                                     ptype = 99;
 
-// Then fill ntuple as before
   // ── Collect step data ──────────────────────────────────────────────────────
-  G4StepPoint* pre  = step->GetPreStepPoint();
-  G4StepPoint* post = step->GetPostStepPoint();
+  const G4StepPoint* pre  = step->GetPreStepPoint();
+  const G4StepPoint* post = step->GetPostStepPoint();
 
   G4int runNo   = G4RunManager::GetRunManager()
                     ->GetCurrentRun()->GetRunID();
@@ -98,6 +95,7 @@ else                                    ptype = 99; // catch-all for anything el
   G4double stepLen = step->GetStepLength()         / CLHEP::mm;
   G4double edep    = step->GetTotalEnergyDeposit() / CLHEP::eV;
 
+  // ── Map process name → integer ID ─────────────────────────────────────────
   G4int procID = 0;
   if (post->GetProcessDefinedStep()) {
     G4String proc = post->GetProcessDefinedStep()->GetProcessName();
@@ -108,7 +106,7 @@ else                                    ptype = 99; // catch-all for anything el
     else if (proc.find("UserMaxTime")          != G4String::npos) procID = 5;
   }
 
-  // ── Fill ntuple row ────────────────────────────────────────────────────────
+  // ── Fill ntuple row (columns 0–18 match RunAction schema) ─────────────────
   auto am = G4RootAnalysisManager::Instance();
   const G4int id = 0;
   G4int col = 0;
@@ -133,10 +131,8 @@ else                                    ptype = 99; // catch-all for anything el
   am->FillNtupleIColumn(id, col++, procID);
   am->AddNtupleRow(id);
 
-  // ── Time cut — kill track if post-step time exceeds threshold ─────────────
-  // Checked AFTER filling the ntuple so the final step is still recorded.
-  // GetGlobalTime() returns time in Geant4 internal units, so compare
-  // directly against kMaxGlobalTime (also in internal units).
+  // ── Time cut — kill track after threshold ──────────────────────────────────
+  // Checked AFTER filling so the final step is still recorded.
   if (post->GetGlobalTime() >= kMaxGlobalTime) {
     step->GetTrack()->SetTrackStatus(fStopAndKill);
   }
