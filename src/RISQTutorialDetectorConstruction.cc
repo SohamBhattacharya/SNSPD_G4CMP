@@ -59,6 +59,8 @@
 #include "G4SystemOfUnits.hh"
 #include "G4UserLimits.hh"
 #include "G4VisAttributes.hh"
+#include "G4Region.hh"       // add to top of file
+#include "G4RegionStore.hh"  // add to top of file
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
@@ -206,10 +208,10 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
   // ══════════════════════════════════════════════════════════════════════════
 
   // ── World ─────────────────────────────────────────────────────────────────
-  G4VSolid*        solid_world = new G4Box("World", 5.*cm, 5.*cm, 5.*cm);
+  G4VSolid*        solid_world = new G4Box("World", 1.*cm, 1.*cm, 1.*cm);
   G4LogicalVolume* log_world   = new G4LogicalVolume(solid_world,
                                                       fLiquidHelium, "World");
-  log_world->SetVisAttributes(G4VisAttributes::Invisible);
+  log_world->SetVisAttributes(G4VisAttributes::GetInvisible());
   fWorldPhys = new G4PVPlacement(0, G4ThreeVector(),
                                   log_world, "World", 0, false, 0);
 
@@ -227,9 +229,17 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
   log_Si->SetVisAttributes(
       new G4VisAttributes(G4Colour(0.5, 0.5, 1.0, 0.4)));  // blue-ish
 
+/*
   G4UserLimits* timeCutSi = new G4UserLimits();
   timeCutSi->SetUserMaxTime(100.0 * CLHEP::nanosecond);
   log_Si->SetUserLimits(timeCutSi);
+  */
+  // Max step = sio2Thick/20 = 14 nm — at least 20 steps through the thinnest layer
+const G4double maxStep = sio2Thick * 1000.;
+G4UserLimits* stepLimitSi = new G4UserLimits();
+stepLimitSi->SetMaxAllowedStep(maxStep);
+stepLimitSi->SetUserMaxTime(1000.0 * CLHEP::nanosecond);
+log_Si->SetUserLimits(stepLimitSi);
 
   // ── SiO2 overlayer ────────────────────────────────────────────────────────
   G4Box* solid_SiO2 = new G4Box("SiO2Solid", halfXY, halfXY, halfSiO2);
@@ -245,9 +255,20 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
   log_SiO2->SetVisAttributes(
       new G4VisAttributes(G4Colour(1.0, 0.8, 0.3, 0.6)));  // gold
 
+/*
   G4UserLimits* timeCutSiO2 = new G4UserLimits();
   timeCutSiO2->SetUserMaxTime(100.0 * CLHEP::nanosecond);
   log_SiO2->SetUserLimits(timeCutSiO2);
+  */
+  G4UserLimits* stepLimitSiO2 = new G4UserLimits();
+stepLimitSiO2->SetMaxAllowedStep(maxStep);   // reuses maxStep from Si block above
+stepLimitSiO2->SetUserMaxTime(100.0 * CLHEP::nanosecond);
+log_SiO2->SetUserLimits(stepLimitSiO2);
+
+// After SetUserLimits for SiO2:
+G4Region* sio2Region = new G4Region("SiO2Region");
+sio2Region->AddRootLogicalVolume(log_SiO2);
+G4cout << "### DetectorConstruction: SiO2Region created" << G4endl;
 
   // ── Load and register Si lattice ──────────────────────────────────────────
   G4LatticeManager* LM = G4LatticeManager::GetLatticeManager();
@@ -290,7 +311,7 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
   // Si/SiO2 interface: fully transmissive — phonons cross freely.
   // G4CMP transmits phonons by default when no absorption/reflection is set.
   // pAbsProb=0, pReflProb=0, pSpecProb=0 → full transmission.
-  G4CMPSurfaceProperty* siSio2Interface = new G4CMPSurfaceProperty(
+  /*G4CMPSurfaceProperty* siSio2Interface = new G4CMPSurfaceProperty(
       "Si_SiO2_Interface",
       0.0, 0.0, 0.0, 0.0,   // qAbsProb, qReflProb, eMinK, hMinK
       0.0, 0.0, 0.0, 0.0,   // pAbsProb, pReflProb, pSpecProb, pMinK
@@ -301,6 +322,24 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
                                   phys_Si, phys_SiO2, siSio2Interface);
   new G4CMPLogicalBorderSurface("border_SiO2_to_Si",
                                   phys_SiO2, phys_Si, siSio2Interface);
+    */                              
+// ── Bound Lithographic Interface (Acoustic Mismatch Model) ─────────────────
+  // A real bonded surface reflects, transmits, and scatters based on frequency.
+// ── Bound Lithographic Interface (Standard G4CMP API) ─────────────────────
+  // G4CMP automatically handles acoustic impedance mismatch refraction when 
+  // absorption and reflection probabilities are set to zero.
+  G4CMPSurfaceProperty* siSio2Interface = new G4CMPSurfaceProperty(
+      "Si_SiO2_LithoInterface",
+      0.0, 0.0, 0.0, 0.0,   // qAbsProb, qReflProb, eMinK, hMinK (Ignore charges)
+      0.0, 0.0, 0.85, 0.0,  // pAbsProb=0, pReflProb=0, pSpecProb=0.85, pMinK
+      0.0, 0.0);            // qpAbsProb, qpReflProb
+
+  // Register both directions so phonons cross the boundary either way
+  new G4CMPLogicalBorderSurface("border_Si_to_SiO2",
+                                phys_Si, phys_SiO2, siSio2Interface);
+  new G4CMPLogicalBorderSurface("border_SiO2_to_Si",
+                                phys_SiO2, phys_Si, siSio2Interface);
+                                  
 
   // ── Sensitive detector on Si bottom face ──────────────────────────────────
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
@@ -308,6 +347,9 @@ void RISQTutorialDetectorConstruction::SetupGeometry()
     fSuperconductorSensitivity = new RISQTutorialSensitivity("PhononElectrode");
   SDman->AddNewDetector(fSuperconductorSensitivity);
   log_Si->SetSensitiveDetector(fSuperconductorSensitivity);
+  
+  
+  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....

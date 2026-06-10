@@ -7,7 +7,7 @@
 // whose post-step global time exceeds kMaxGlobalTime.
 
 #include "RISQTutorialSteppingAction.hh"
-#include "g4root.hh"
+#include "G4RootAnalysisManager.hh"
 #include "G4Step.hh"
 #include "G4Track.hh"
 #include "G4StepPoint.hh"
@@ -19,7 +19,7 @@
 // At ~5 mm/ns ballistic phonon speed in Si:
 //   100 ns ≈ ~500 mm total path  (~1000 bounces across the 0.525 mm slab)
 //    10 ns ≈ ~50  mm total path  (~100 bounces)
-static constexpr G4double kMaxGlobalTime = 40000.0 * CLHEP::ns;
+static constexpr G4double kMaxGlobalTime = 50.0 * CLHEP::ns;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 

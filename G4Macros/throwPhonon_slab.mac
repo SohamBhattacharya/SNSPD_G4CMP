@@ -52,3 +52,4 @@
 #/vis/ogl/set/printFilename throwPhonon_slab
 #/vis/ogl/set/printMode pixmap
 #/vis/ogl/printEPS
+/vis/viewer/set/viewpointThetaPhi 0 0

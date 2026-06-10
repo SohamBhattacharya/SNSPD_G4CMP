@@ -1,0 +1,119 @@
+# throwProton_interpolate.mac
+# Smooth interpolated animation — exports EPS frames, convert to PNG after.
+#
+# IMPORTANT: In Geant4 10.7 OGLSQt, PNG is not a direct export format.
+# Frames are written as EPS. The make_animation.py script converts them.
+#
+# Run:
+#   mkdir -p vis_frames_interp
+#   singularity run \
+#     --env G4LATTICEDATA="...CrystalMaps" \
+#     --env DISPLAY=$DISPLAY \
+#     --env G4GL2PS_BUFFERSIZE=209715200 \
+#     --pwd /home/guillermo/Programming/G4CMP/examples/RISQTutorial/build \
+#     ~/ubuntu-sandbox/ \
+#     ./RISQTutorial ../G4Macros/throwProton_interpolate.mac
+#
+# After run, move frames and stitch:
+#   mv g4_*.eps vis_frames_interp/ 2>/dev/null
+#   mv g4_*.svg vis_frames_interp/ 2>/dev/null
+#   python make_animation.py vis_frames_interp --fps 15 --out phonons_interp.mp4
+
+/run/initialize
+
+/vis/open OGLSQt 1280x960
+/vis/ogl/set/displayListLimit 5000000
+
+# Geometry
+/vis/drawVolume
+/vis/viewer/flush
+/vis/geometry/set/forceWireframe World 1
+/vis/geometry/set/forceWireframe SiSlab 1
+/vis/geometry/set/forceWireframe SiO2Layer 1
+/vis/viewer/set/style wireframe
+/vis/viewer/set/viewpointThetaPhi 0 0
+/vis/viewer/set/upVector 0 1 0
+/vis/viewer/set/background 0.03 0.03 0.10 1
+/vis/viewer/set/autoRefresh false
+/vis/viewer/zoom 150
+/vis/viewer/flush
+
+# Trajectory model
+/tracking/storeTrajectory 1
+/vis/scene/add/trajectories rich
+/vis/modeling/trajectories/create/drawByParticleID CMP_Colors
+/vis/modeling/trajectories/select CMP_Colors
+/vis/modeling/trajectories/CMP_Colors/set proton white
+/vis/modeling/trajectories/CMP_Colors/set e- yellow
+/vis/modeling/trajectories/CMP_Colors/set G4CMPDriftElectron blue
+/vis/modeling/trajectories/CMP_Colors/set G4CMPDriftHole orange
+/vis/modeling/trajectories/CMP_Colors/set phononTS red
+/vis/modeling/trajectories/CMP_Colors/set phononTF green
+/vis/modeling/trajectories/CMP_Colors/set phononL cornflowerblue
+/vis/modeling/trajectories/CMP_Colors/default/setTimeSliceInterval 0.05 ns
+
+/vis/viewer/set/timeWindow/displayHeadTime true
+/vis/viewer/set/timeWindow/fadeFactor 0.9
+/vis/scene/endOfEventAction accumulate
+
+# Physics
+/g4cmp/producePhonons 0.0001
+/g4cmp/produceCharges 0.0001
+/g4cmp/sampleLuke     0.0001
+
+/gps/particle proton
+/gps/pos/type Point
+/gps/pos/centre 0.0 0.0 0.5 mm
+/gps/direction 0 0 -1
+/gps/ene/type Mono
+/gps/energy 120 GeV
+
+# Run first — keyframes must be saved AFTER beamOn
+/run/beamOn 1
+/vis/viewer/flush
+
+# Save keyframes — log-spaced time windows 0 to 100 ns
+/vis/viewer/set/timeWindow/startTime 0.0 ns 0.05 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 0.1 ns 0.1 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 0.3 ns 0.2 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 0.7 ns 0.4 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 1.5 ns 0.8 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 3.0 ns 1.5 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 6.0 ns 3.0 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 12.0 ns 6.0 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 25.0 ns 13.0 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 0.0 ns 100.0 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+# Interpolate: writes g4_NNN.eps (or svg) to current directory
+# Syntax for Geant4 10.7: /vis/viewer/interpolate [n_steps]
+# 9 intervals x 15 steps = 135 interpolated frames
+/vis/viewer/interpolate 15

@@ -9,14 +9,12 @@
 #include "G4UIExecutive.hh"
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
-#include "G4CMPPhysicsList.hh"
-#include "G4CMPPhysics.hh"
 #include "G4CMPConfigManager.hh"
 #include "RISQTutorialActionInitialization.hh"
 #include "RISQTutorialConfigManager.hh"
 #include "RISQTutorialDetectorConstruction.hh"
 #include "RISQTutorialDetectorParameters.hh"
-#include "FTFP_BERT.hh"
+#include "RISQTutorialPhysicsList.hh"
 
 using namespace RISQTutorialDetectorParameters;
 
@@ -24,14 +22,12 @@ int main(int argc, char** argv)
 {
   // ── Run manager ────────────────────────────────────────────────────────────
   G4RunManager* runManager = new G4RunManager;
-
   runManager->SetUserInitialization(new RISQTutorialDetectorConstruction);
 
-  FTFP_BERT* physics = new FTFP_BERT;
-  physics->RegisterPhysics(new G4CMPPhysics);
-  physics->SetCuts();
-  runManager->SetUserInitialization(physics);
+  // ── Physics list (Livermore EM + FTFP_BERT hadronic + G4CMP) ─────────────
+  runManager->SetUserInitialization(new RISQTutorialPhysicsList);
 
+  // ── Action initialisation ─────────────────────────────────────────────────
   runManager->SetUserInitialization(new RISQTutorialActionInitialization);
 
   G4CMPConfigManager::Instance();
@@ -39,31 +35,29 @@ int main(int argc, char** argv)
 
   runManager->Initialize();
 
-  // ── Visualisation (only initialised — not opened yet) ─────────────────────
+  // ── Visualisation ─────────────────────────────────────────────────────────
   G4VisManager* visManager = new G4VisExecutive;
   visManager->Initialize();
 
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-  // ── Batch mode: macro passed as argument ───────────────────────────────────
+  // ── Batch mode ────────────────────────────────────────────────────────────
   if (argc > 1) {
     G4String command  = "/control/execute ";
     G4String fileName = argv[1];
     UImanager->ApplyCommand(command + fileName);
   }
-  // ── Interactive mode: no argument → open Qt session ───────────────────────
+  // ── Interactive mode ──────────────────────────────────────────────────────
   else {
     G4UIExecutive* ui = new G4UIExecutive(argc, argv);
-
     UImanager->ApplyCommand("/vis/open OGL");
     UImanager->ApplyCommand("/vis/viewer/set/upVector 0 1 0");
-    UImanager->ApplyCommand("/vis/viewer/set/viewpointThetaPhi 70 20");
-    UImanager->ApplyCommand("/vis/viewer/zoom 1.4");
+    UImanager->ApplyCommand("/vis/viewer/set/viewpointThetaPhi 0 0");
+    UImanager->ApplyCommand("/vis/viewer/zoom 150");
     UImanager->ApplyCommand("/vis/drawVolume");
     UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
     UImanager->ApplyCommand("/vis/scene/add/trajectories");
     UImanager->ApplyCommand("/tracking/storeTrajectory 1");
-
     ui->SessionStart();
     delete ui;
   }

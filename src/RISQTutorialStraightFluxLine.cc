@@ -125,7 +125,7 @@ void RISQTutorialStraightFluxLine::ConstructStraightFluxLine(G4RotationMatrix * 
   G4LogicalVolume * log_baseNbLayer = new G4LogicalVolume(solid_baseNbLayer,
 							  niobium_mat,
 							  baseNbLayerNameLog);
-  log_baseNbLayer->SetVisAttributes(G4VisAttributes::Invisible);//niobium_vis);
+  log_baseNbLayer->SetVisAttributes(G4VisAttributes::GetInvisible());//niobium_vis);
 
   //Now, create a physical volume and G4PVPlacement for storing as the final output. This is the
   //top volume.

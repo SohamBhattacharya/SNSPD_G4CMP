@@ -5,9 +5,9 @@
 /tracking/storeTrajectory 0
 
 # G4CMP: produce both phonons and charges from the proton shower
-/g4cmp/producePhonons 0.001
-/g4cmp/produceCharges 0.001
-/g4cmp/sampleLuke     0.001
+/g4cmp/producePhonons 0.000000000005
+/g4cmp/produceCharges 0.000000000005
+/g4cmp/sampleLuke     0.000000000005
 
 # 120 GeV proton entering the slab from above (-Z face)
 # Slab Z runs from -0.2625 mm to +0.2625 mm
@@ -18,5 +18,5 @@
 /gps/pos/centre 0.0 0.0 0.5 mm
 /gps/direction 0 0 -1
 /gps/ene/type Mono
-/gps/energy 120 GeV
+/gps/energy 0.00005 GeV
 /run/beamOn 1

@@ -1,0 +1,108 @@
+# throwProton_interpolate.mac
+# Uses /vis/viewer/interpolate to produce smooth continuous animation.
+# Based on John Allison's prescription from the Geant4 forum (Dec 2019).
+#
+# Run:
+#   mkdir -p vis_frames_interp
+#   singularity run \
+#     --env G4LATTICEDATA="...CrystalMaps" \
+#     --env DISPLAY=$DISPLAY \
+#     --env G4GL2PS_BUFFERSIZE=209715200 \
+#     --pwd /home/guillermo/Programming/G4CMP/examples/RISQTutorial/build \
+#     ~/ubuntu-sandbox/ \
+#     ./RISQTutorial ../G4Macros/throwProton_interpolate.mac
+#
+# Stitch:
+#   python make_animation.py vis_frames_interp --fps 15 --out phonons_interp.mp4
+
+/run/initialize
+
+/vis/open OGLSQt 1280x960
+/vis/ogl/set/displayListLimit 5000000
+
+# Geometry
+/vis/drawVolume
+/vis/viewer/flush
+/vis/geometry/set/forceWireframe World 1
+/vis/geometry/set/forceWireframe SiSlab 1
+/vis/geometry/set/forceWireframe SiO2Layer 1
+/vis/viewer/set/style wireframe
+/vis/viewer/set/viewpointThetaPhi 0 0
+/vis/viewer/set/upVector 0 0 1
+/vis/viewer/set/background 0.03 0.03 0.10 1
+/vis/viewer/set/autoRefresh false
+/vis/viewer/zoom 150
+/vis/viewer/flush
+
+# Trajectories with time slicing
+/tracking/storeTrajectory 1
+/vis/scene/add/trajectories rich
+/vis/modeling/trajectories/create/drawByParticleID CMP_Colors
+/vis/modeling/trajectories/select CMP_Colors
+/vis/modeling/trajectories/CMP_Colors/set proton white
+/vis/modeling/trajectories/CMP_Colors/set e- yellow
+/vis/modeling/trajectories/CMP_Colors/set G4CMPDriftElectron blue
+/vis/modeling/trajectories/CMP_Colors/set G4CMPDriftHole orange
+/vis/modeling/trajectories/CMP_Colors/set phononTS red
+/vis/modeling/trajectories/CMP_Colors/set phononTF green
+/vis/modeling/trajectories/CMP_Colors/set phononL cornflowerblue
+/vis/modeling/trajectories/CMP_Colors/default/setTimeSliceInterval 0.05 ns
+
+/vis/viewer/set/timeWindow/displayHeadTime true
+/vis/viewer/set/timeWindow/fadeFactor 0.85
+/vis/scene/endOfEventAction accumulate
+
+# Physics
+/g4cmp/producePhonons 0.0001
+/g4cmp/produceCharges 0.0001
+/g4cmp/sampleLuke     0.0001
+
+/gps/particle proton
+/gps/pos/type Point
+/gps/pos/centre 0.0 0.0 0.5 mm
+/gps/direction 0 0 -1
+/gps/ene/type Mono
+/gps/energy 120 GeV
+
+/run/beamOn 1
+/vis/viewer/flush
+
+# Save keyframes at different time windows
+# interpolate will smoothly interpolate between these saved views
+
+/vis/viewer/set/timeWindow/startTime 0.0 ns 0.1 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 0.5 ns 0.5 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 2.0 ns 1.0 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 5.0 ns 3.0 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 10.0 ns 5.0 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 20.0 ns 10.0 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 50.0 ns 30.0 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+/vis/viewer/set/timeWindow/startTime 0.0 ns 100.0 ns
+/vis/viewer/flush
+/vis/viewer/save
+
+# Interpolate between saved keyframes and export frames
+# Argument: number of interpolation steps between each keyframe pair
+# 10 steps x 7 intervals = 70 frames total at ~15fps = ~5 second video
+/vis/viewer/interpolate vis_frames_interp 10

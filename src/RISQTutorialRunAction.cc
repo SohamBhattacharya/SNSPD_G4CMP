@@ -12,7 +12,7 @@
 // ROOT buffer crash (vector::reserve) on the first AddNtupleRow call.
 
 #include "RISQTutorialRunAction.hh"
-#include "g4root.hh"
+#include "G4RootAnalysisManager.hh"
 #include "G4Run.hh"
 #include "globals.hh"
 

@@ -345,9 +345,23 @@ This section summarizes changes from first commit and how to run for myself.
 Run within apptainer / singularity
 singularity run ~/ubuntu-sandbox/ ./RISQTutorial
 
+## Run in Qt
+
 Run with macros in Qt
 /control/execute ../G4Macros/throwPhonon_slab.mac
 /control/execute ../G4Macros/gun_slab.mac
+/control/execute ../G4Macros/throwProton.mac
+/control/execute ../G4Macros/throwProton_anim.mac
+
+### Comments & Macro Options
+Locally run with 0.0001 of the total phonons for a quick run.
+/g4cmp/producePhonons 0.0001
+
+Positioning point of view	
+Sideview:
+/vis/viewer/set/viewpointThetaPhi 90 0
+Front:
+/vis/viewer/set/viewpointThetaPhi 0 0
 
 
 ### Run with your own lattices
@@ -356,4 +370,58 @@ Change the location of the lattice data:
 singularity run \
     --env G4LATTICEDATA="/home/guillermo/Programming/G4CMP/examples/RISQTutorial/CrystalMaps" \
     ~/ubuntu-sandbox/ ./RISQTutorial ../G4Macros/throwProton_batch.mac
+    
+singularity run \
+    --env G4LATTICEDATA="/opt/G4CMP/G4CMP-install/share/G4CMP/CrystalMaps" \
+    ~/ubuntu-sandbox/ ./RISQTutorial ../G4Macros/throwProton_batch.mac
+
+singularity run \
+    --env G4LATTICEDATA="/home/guillermo/G4CMP-new/G4CMP-install/share/G4CMP/CrystalMaps" \
+    --env LD_LIBRARY_PATH="/home/guillermo/G4CMP-new/G4CMP-install/lib:/home/guillermo/geant4-11.2.2/lib:$LD_LIBRARY_PATH" \
+    --env G4NEUTRONHPDATA="/home/guillermo/data/G4NDL4.7.1" \
+    --env G4LEDATA="/home/guillermo/data/G4EMLOW8.5" \
+    --env G4LEVELGAMMADATA="/home/guillermo/data/PhotonEvaporation5.7" \
+    --env G4RADIOACTIVEDATA="/home/guillermo/data/RadioactiveDecay5.6" \
+    --env G4PARTICLEXSDATA="/home/guillermo/data/G4PARTICLEXS4.0" \
+    --env G4PIIDATA="/home/guillermo/data/G4PII1.3" \
+    --env G4REALSURFACEDATA="/home/guillermo/data/RealSurface2.2" \
+    --env G4SAIDXSDATA="/home/guillermo/data/G4SAIDDATA2.0" \
+    --env G4ABLADATA="/home/guillermo/data/G4ABLA3.3" \
+    --env G4INCLDATA="/home/guillermo/data/G4INCL1.2" \
+    --env G4ENSDFSTATEDATA="/home/guillermo/data/G4ENSDFSTATE2.3" \
+    ~/ubuntu-sandbox/ \
+    ./RISQTutorial ../G4Macros/throwProton_batch.mac
+
+singularity run \
+    --env G4LATTICEDATA="/home/guillermo/Programming/G4CMP/examples/RISQTutorial/CrystalMaps" \
+    --env LD_LIBRARY_PATH="/home/guillermo/G4CMP-new/G4CMP-install/lib:/home/guillermo/geant4-11.2.2/lib:$LD_LIBRARY_PATH" \
+    --env G4NEUTRONHPDATA="/home/guillermo/data/G4NDL4.7.1" \
+    --env G4LEDATA="/home/guillermo/data/G4EMLOW8.5" \
+    --env G4LEVELGAMMADATA="/home/guillermo/data/PhotonEvaporation5.7" \
+    --env G4RADIOACTIVEDATA="/home/guillermo/data/RadioactiveDecay5.6" \
+    --env G4PARTICLEXSDATA="/home/guillermo/data/G4PARTICLEXS4.0" \
+    --env G4PIIDATA="/home/guillermo/data/G4PII1.3" \
+    --env G4REALSURFACEDATA="/home/guillermo/data/RealSurface2.2" \
+    --env G4SAIDXSDATA="/home/guillermo/data/G4SAIDDATA2.0" \
+    --env G4ABLADATA="/home/guillermo/data/G4ABLA3.3" \
+    --env G4INCLDATA="/home/guillermo/data/G4INCL1.2" \
+    --env G4ENSDFSTATEDATA="/home/guillermo/data/G4ENSDFSTATE2.3" \
+    ~/ubuntu-sandbox/ \
+    ./RISQTutorial ../G4Macros/throwProton_batch.mac
+
+### Animation
+
+Running animations in G4 10.7 is not easy... Current options 
+1. Produce g4view files and run interpolation with G4 11.
+2. Run with the .root file with the step info into a py file
+
+### Postprocessing
+
+I use a python script with the .root file with the step info
+
+python phonon_radial_density_root.py --input phonon_steps_10000_proton.root --show --log
+
+python make_animation.py --input phonon_steps_10000_proton.root
+
+
 

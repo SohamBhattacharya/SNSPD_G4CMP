@@ -126,7 +126,7 @@ void RISQTutorialTransmissionLine::ConstructTransmissionLine(G4RotationMatrix * 
   G4LogicalVolume * log_baseNbLayer = new G4LogicalVolume(solid_baseNbLayer,
 							  niobium_mat,
 							  baseNbLayerNameLog);
-  log_baseNbLayer->SetVisAttributes(G4VisAttributes::Invisible);//niobium_vis);
+  log_baseNbLayer->SetVisAttributes(G4VisAttributes::GetInvisible());//niobium_vis);
 
   //Now, create a physical volume and G4PVPlacement for storing as the final output. This is the
   //top volume.
@@ -203,7 +203,7 @@ void RISQTutorialTransmissionLine::ConstructTransmissionLine(G4RotationMatrix * 
   G4LogicalVolume * log_transmissionLineEmpty = new G4LogicalVolume(solid_transmissionLineEmpty,
 								    air_mat,
 								    tlNameEmptyLog);
-  log_transmissionLineEmpty->SetVisAttributes(air_vis);//G4VisAttributes::Invisible);
+  log_transmissionLineEmpty->SetVisAttributes(air_vis);//G4VisAttributes::GetInvisible());
   
   G4VPhysicalVolume * phys_transmissionLineEmpty = new G4PVPlacement(0,
 								     G4ThreeVector(0,0,0),
