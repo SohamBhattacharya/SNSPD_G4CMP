@@ -1,0 +1,80 @@
+# =========================
+# CMake build files
+# =========================
+
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+install_manifest.txt
+compile_commands.json
+
+# CMake generated metadata
+*.cmake
+!CMakeLists.txt
+
+# =========================
+# Compiled binaries / objects
+# =========================
+
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+*.a
+*.lib
+*.exe
+
+# =========================
+# Geant4 outputs
+# =========================
+
+*.root
+*.g4view
+*.log
+
+# Simulation output files
+*_hits.txt
+*_primary.txt
+*_steps.txt
+*_tracking.txt
+
+# =========================
+# Visualization / media
+# =========================
+
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.svg
+*.gif
+*.mp4
+*.mov
+*.avi
+*.webm
+
+# Frames generated for animations
+vis_frames/
+vis_frames_*/
+
+# =========================
+# Python
+# =========================
+
+__pycache__/
+*.so
+
+# Jupyter
+.ipynb_checkpoints/
+
+# =========================
+# Temporary files
+# =========================
+
+*.tmp
+*.bak
+*~
+.DS_Store

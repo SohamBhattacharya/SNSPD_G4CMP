@@ -1,0 +1,35 @@
+# Amorphous SiO2
+# Caitlyn Stone-Whitehead, Colorado School of Mines
+# Crystal parameters
+amorphous
+# Phonon parameters
+# S. Tamura, Phys. Rev. B 31, 2574 (1985)
+dyn 54.18 -13.14 16.10 31.20 GPa
+scat 4.65e-42 s3
+decay 7.99e-55 s4
+decayTT 0.54
+# Phonon Mode DOS approximated as equivalent to Alpha-Quartz SiO2
+LDOS 0.10001
+STDOS 0.53333
+FTDOS 0.36666
+Debye 4.2 THz           
+vsound 5970 m/s    # Longitudinal sound speed
+vtrans 3760 m/s    # Transverse sound speed
+
+# =======================================================================
+# CHARGE CARRIER SUPPRESSION LAYER (Added to prevent std::bad_alloc)
+# =======================================================================
+bandgap    9.0 eV      # True electronic bandgap of Silicon Dioxide
+pairEnergy 17.0 eV     # Average energy required to create an e-/h+ pair
+fanoFactor 0.15
+epsilon    3.9         # Dielectric constant of SiO2
+
+# Restrict charge carrier transport to sub-atomic scales (1 nanometer)
+l0_e 1e-9 m
+l0_h 1e-9 m
+
+# Artificially inflate effective mass to kill carrier mobility
+hmass 10.0
+emass 10.0 10.0 10.0
+
+valleyDir 1 0 0
